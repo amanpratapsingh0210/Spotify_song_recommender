@@ -26,6 +26,10 @@ similarity_matrix = cosine_similarity(features)
 
 # Recommendation function
 def recommend_song(track_id, top_n=5):
+    if track_id not in data['track_id'].values:
+        st.error("❌ The selected track is not available in the dataset for recommendations.")
+        return pd.DataFrame(columns=['track_name', 'track_artist'])
+    
     idx = data.index[data['track_id'] == track_id][0]
     sim_scores = list(enumerate(similarity_matrix[idx]))
     sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)[1:top_n + 1]
