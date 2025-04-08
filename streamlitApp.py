@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 
+st.title("✅ App Loaded Successfully")
+
 # Load datasets
 data = pd.read_csv('finalDataset.csv')
 tracks = pd.read_csv('tracks.csv')
