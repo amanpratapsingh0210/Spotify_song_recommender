@@ -3,6 +3,8 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import pickle
+from scipy.sparse import load_npz
+
 
 st.set_page_config(page_title="Spotify Song Recommender", layout="centered")
 st.title("🎵 Spotify Song Recommender")
@@ -26,14 +28,7 @@ except Exception as e:
 valid_ids = set(data['track_id'])
 tracks = tracks[tracks['track_id'].isin(valid_ids)]
 
-# Load similarity matrix
-try:
-    with open("similarity.pkl", "rb") as f:
-        similarity_matrix = pickle.load(f)
-    st.success("✅ similarity.pkl loaded")
-except Exception as e:
-    st.error(f"❌ Error loading similarity.pkl: {e}")
-    st.stop()
+similarity = load_npz("similarity_sparse.npz")
 
 # Recommendation function
 def recommend_song(track_id, top_n=5):
@@ -42,7 +37,7 @@ def recommend_song(track_id, top_n=5):
         return pd.DataFrame(columns=['track_name', 'track_artist'])
     
     idx = data.index[data['track_id'] == track_id][0]
-    sim_scores = list(enumerate(similarity_matrix[idx]))
+    sim_scores = list(enumerate(similarity[idx]))
     sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)[1:top_n + 1]
     song_indices = [i[0] for i in sim_scores]
     return tracks.iloc[song_indices][['track_name', 'track_artist']]
