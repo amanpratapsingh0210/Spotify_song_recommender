@@ -4,7 +4,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import os
 
 # Load the dataset
-data = pd.read_csv(r'finalDataSet.csv')
+data = pd.read_csv(r'finalDataset.csv')
 tracks = pd.read_csv(r'tracks.csv')
 
 # Calculate similarity matrix (using selected features)
