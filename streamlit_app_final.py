@@ -12,14 +12,14 @@ st.title("🎵 Spotify Song Recommender")
 # Debug block for loading datasets
 try:
     data = pd.read_csv("finalDataset.csv")
-    st.success("✅ finalDataset.csv loaded")
+    # st.success("✅ finalDataset.csv loaded")
 except Exception as e:
     st.error(f"❌ Error loading finalDataset.csv: {e}")
     st.stop()
 
 try:
     tracks = pd.read_csv("tracks.csv")
-    st.success("✅ tracks.csv loaded")
+    # st.success("✅ tracks.csv loaded")
 except Exception as e:
     st.error(f"❌ Error loading tracks.csv: {e}")
     st.stop()
@@ -28,18 +28,24 @@ except Exception as e:
 valid_ids = set(data['track_id'])
 tracks = tracks[tracks['track_id'].isin(valid_ids)]
 
-similarity = load_npz("similarity_sparse.npz")
+similarity = load_npz("similarity_sparse.npz").toarray()
 
-# Recommendation function
+# Updated recommendation function
 def recommend_song(track_id, top_n=5):
     if track_id not in data['track_id'].values:
         st.error("❌ The selected track is not available in the dataset for recommendations.")
         return pd.DataFrame(columns=['track_name', 'track_artist'])
-    
+
     idx = data.index[data['track_id'] == track_id][0]
     sim_scores = list(enumerate(similarity[idx]))
-    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)[1:top_n + 1]
-    song_indices = [i[0] for i in sim_scores]
+    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)[1:]
+
+    # Filter only non-zero scores and get top N
+    song_indices = [i[0] for i in sim_scores if i[1] > 0][:top_n]
+
+    if not song_indices:
+        return pd.DataFrame(columns=['track_name', 'track_artist'])
+
     return tracks.iloc[song_indices][['track_name', 'track_artist']]
 
 # User input
