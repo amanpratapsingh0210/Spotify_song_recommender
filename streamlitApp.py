@@ -2,21 +2,9 @@ import streamlit as st
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 
-st.title("🔍 Debug Mode: App Started")
-
-try:
-    data = pd.read_csv("finalDataset.csv")
-    st.success("✅ finalDataset.csv loaded")
-except Exception as e:
-    st.error(f"❌ Failed to load finalDataset.csv: {e}")
-    st.stop()
-
-try:
-    tracks = pd.read_csv("tracks.csv")
-    st.success("✅ tracks.csv loaded")
-except Exception as e:
-    st.error(f"❌ Failed to load tracks.csv: {e}")
-    st.stop()
+# Load datasets
+data = pd.read_csv('finalDataset.csv')
+tracks = pd.read_csv('tracks.csv')
 
 # Calculate similarity matrix
 features = data[['track_popularity','playlist_id','playlist_genre','playlist_subgenre',
@@ -26,10 +14,6 @@ similarity_matrix = cosine_similarity(features)
 
 # Recommendation function
 def recommend_song(track_id, top_n=5):
-    if track_id not in data['track_id'].values:
-        st.error("❌ The selected track is not available in the dataset for recommendations.")
-        return pd.DataFrame(columns=['track_name', 'track_artist'])
-    
     idx = data.index[data['track_id'] == track_id][0]
     sim_scores = list(enumerate(similarity_matrix[idx]))
     sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)[1:top_n + 1]
