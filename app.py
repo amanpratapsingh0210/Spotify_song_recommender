@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, render_template
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
+import os
 
 # Load the dataset
 data = pd.read_csv(r'finalDataSet.csv')
