@@ -2,11 +2,21 @@ import streamlit as st
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 
-st.title("✅ App Loaded Successfully")
+st.title("🔍 Debug Mode: App Started")
 
-# Load datasets
-data = pd.read_csv('finalDataset.csv')
-tracks = pd.read_csv('tracks.csv')
+try:
+    data = pd.read_csv("finalDataset.csv")
+    st.success("✅ finalDataset.csv loaded")
+except Exception as e:
+    st.error(f"❌ Failed to load finalDataset.csv: {e}")
+    st.stop()
+
+try:
+    tracks = pd.read_csv("tracks.csv")
+    st.success("✅ tracks.csv loaded")
+except Exception as e:
+    st.error(f"❌ Failed to load tracks.csv: {e}")
+    st.stop()
 
 # Calculate similarity matrix
 features = data[['track_popularity','playlist_id','playlist_genre','playlist_subgenre',
