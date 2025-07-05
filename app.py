@@ -32,7 +32,7 @@ def get_songs():
     cleaned_data = tracks[['track_id', 'track_name','track_artist']].dropna()
 
     # Convert to JSON-compatible format
-    songs = cleaned_data.to_dict(orient='records')
+    songs = [row.to_dict() for _, row in cleaned_data.iterrows()]
     return jsonify(songs)  # Send song list as JSON
 
 @app.route('/recommend', methods=['POST'])
