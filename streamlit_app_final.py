@@ -12,15 +12,15 @@ st.title("🎵 Spotify Song Recommender")
 data = pd.read_csv("finalDataset.csv")
 tracks = pd.read_csv("tracks.csv")
 
-valid_ids = set(data['track_id'])
+valid_ids = list(data['track_id'])
 tracks = tracks[tracks['track_id'].isin(valid_ids)]
 
 similarity = load_npz("similarity_sparse.npz").toarray()
 
 def recommend_song(track_id, top_n=5):
-    if track_id not in data['track_id'].values:
+    if track_id not in data['track_id'].tolist():
         st.error("The selected track is not available in the dataset for recommendations.")
-        return pd.DataFrame(columns=['track_name', 'track_artist'])
+        return pd.DataFrame({"track_name": [], "track_artist": []})
 
     idx = data.index[data['track_id'] == track_id][0]
     sim_scores = list(enumerate(similarity[idx]))
@@ -29,15 +29,15 @@ def recommend_song(track_id, top_n=5):
     song_indices = [i[0] for i in sim_scores if i[1] > 0][:top_n]
 
     if not song_indices:
-        return pd.DataFrame(columns=['track_name', 'track_artist'])
+        return pd.DataFrame({"track_name": [], "track_artist": []})
 
     return tracks.iloc[song_indices][['track_name', 'track_artist']]
+
 if __name__ == "__main__":
-    
-    selected_track = st.selectbox("🎧 Select a track:", tracks['track_name'].values)
+    selected_track = st.selectbox("🎧 Select a track:", tracks['track_name'].tolist())
 
     if selected_track:
-        track_id = tracks[tracks['track_name'] == selected_track]['track_id'].values[0]
+        track_id = tracks[tracks['track_name'] == selected_track]['track_id'].tolist()[0]
         recommendations = recommend_song(track_id)
 
         if not recommendations.empty:
