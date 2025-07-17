@@ -9,8 +9,8 @@ app = Flask(__name__)
 # Load the dataset
 # Ensure these CSV files are in the same directory as app.py or provide full paths
 try:
-    data = pd.read_csv('finalDataSet.csv')
-    tracks = pd.read_csv('tracks.csv')
+    data = pd.read_csv(r'datasets/finalDataSet.csv')
+    tracks = pd.read_csv(r'datasets/tracks.csv')
 except FileNotFoundError:
     print("Error: 'finalDataSet.csv' or 'tracks.csv' not found. Please ensure they are in the same directory.")
     # Exit or handle the error appropriately
