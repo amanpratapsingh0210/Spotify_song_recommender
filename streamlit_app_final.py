@@ -9,8 +9,8 @@ from scipy.sparse import load_npz
 st.set_page_config(page_title="Spotify Song Recommender", layout="centered")
 st.title("🎵 Spotify Song Recommender")
 
-data = pd.read_csv("finalDataset.csv")
-tracks = pd.read_csv("tracks.csv")
+data = pd.read_csv(r"datasets/finalDataset.csv")
+tracks = pd.read_csv(r"datasets/tracks.csv")
 
 valid_ids = list(data['track_id'])
 tracks = tracks[tracks['track_id'].isin(valid_ids)]
